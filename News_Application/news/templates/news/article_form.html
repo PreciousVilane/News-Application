@@ -1,0 +1,23 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<h2>
+    {% if is_edit %}
+        Edit Article
+    {% else %}
+        Create Article
+    {% endif %}
+</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">
+        {% if is_edit %}Update{% else %}Save{% endif %}
+    </button>
+    <a href="{% url 'article_list' %}" style="margin-left: 10px;">Cancel</a>
+</form>
+
+{% endblock %}
+

@@ -1,0 +1,32 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<h2>Welcome to the News Application, {{ user.username }}!</h2>
+<p>Stay updated with the latest news from journalists, editors, and publishers.</p>
+
+<section>
+    <h3>Latest Publishers</h3>
+    <ul>
+        <!-- Example static articles -->
+        <li><strong>Tech Times:</strong> New tech trends in 2026</li>
+        <li><strong>Daily Sun:</strong> Upcoming elections updates</li>
+        <li><strong>Vilane Productions</strong> </li>
+    </ul>
+</section>
+
+{% if user.role == 'reader' %}
+    <p>View approved articles and Browse Newsletters</p>
+   <br> <a href="{% url 'article_list' %}">Browse Articles</a><br>
+    <a href="{% url 'newsletter_list' %}">Browse Newsletters</a>
+{% elif user.role == 'journalist' %}
+    <p>Create or manage your content:</p>
+    <a href="{% url 'create_article' %}">Create Article</a> |
+    <a href="{% url 'create_newsletter' %}">Create Newsletter</a>
+    <a href="{% url 'newsletter_list' %}" style="margin-left: 10px;">View Newsletters</a>
+    <a href="{% url 'article_list' %}" style="margin-left: 10px;">View Articles</a>
+{% elif user.role == 'editor' %}
+    <p>Review pending articles:</p>
+    <a href="{% url 'pending_articles' %}">Pending Articles</a>
+{% endif %}
+
+{% endblock %}

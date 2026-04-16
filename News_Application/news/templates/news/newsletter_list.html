@@ -1,0 +1,44 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<h2>Newsletters</h2>
+
+<ul>
+    {% for newsletter in newsletters %}
+        <li style="margin-bottom: 20px;">
+            <h3>
+                <a href="{% url 'newsletter_detail' newsletter.id %}">
+                    {{ newsletter.title }}
+                </a>
+            </h3>
+
+            {% if newsletter.publisher %}
+                <small>Publisher: {{ newsletter.publisher.name }}</small>
+            {% endif %}
+
+            <p>
+                {{ newsletter.content|truncatewords:30 }}
+            </p>
+
+            <!-- Role-based actions -->
+            {% if user.role == 'journalist' %}
+                {% if newsletter in user.independent_newsletters.all %}
+                    <a href="{% url 'update_newsletter' newsletter.id %}">Edit</a> |
+                    <a href="{% url 'delete_newsletter' newsletter.id %}">Delete</a>
+                {% endif %}
+            {% elif user.role == 'editor' %}
+                <a href="{% url 'update_newsletter' newsletter.id %}">Edit</a> |
+                <a href="{% url 'delete_newsletter' newsletter.id %}">Delete</a>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No newsletters available.</li>
+    {% endfor %}
+    <p><a href="{% url 'home' %}">Go back home</a></p>
+</ul>
+
+{% if user.role == 'journalist' %}
+    <p><a href="{% url 'create_newsletter' %}"> Create Newsletter</a></p>
+{% endif %}
+
+{% endblock %}

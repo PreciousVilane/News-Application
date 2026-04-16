@@ -1,0 +1,25 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<article>
+    <h2>{{ newsletter.title }}</h2>
+
+    {% if newsletter.publisher %}
+        <p><strong>Publisher:</strong> {{ newsletter.publisher.name }}</p>
+    {% endif %}
+
+    {% if newsletter.journalist %}
+        <p><strong>Written by:</strong> {{ newsletter.journalist.username }}</p>
+    {% endif %}
+
+    <hr>
+
+    <div style="white-space: pre-line;">
+        {{ newsletter.content }}
+    </div>
+
+    <br>
+
+    <a href="{% url 'newsletter_list' %}">← Back to newsletters</a>
+</article>
+{% endblock %}
