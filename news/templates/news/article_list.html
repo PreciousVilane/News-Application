@@ -1,0 +1,96 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<h2>Articles</h2>
+
+<ul>
+    {% for article in articles %}
+        <li style="margin-bottom: 25px; padding: 10px; border-bottom: 1px solid #ccc;">
+
+            <!-- Article title and approval status -->
+            <h3>
+                <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a>
+                {% if article.approved %}
+                    <span style="color:green;">[Approved]</span>
+                {% else %}
+                    <span style="color:red;">[Pending]</span>
+                {% endif %}
+            </h3>
+
+            <!-- Publisher / Journalist info -->
+            {% if article.publisher %}
+                <small>
+                    Publisher: {{ article.publisher.name }}
+
+                    {# Highlight subscribed publisher #}
+                    {% if user.role == 'reader' and article.publisher in user.subscribed_publishers.all %}
+                        <span class="badge" style="background:#d4edda; padding:2px 6px;">
+                            Subscribed Publisher
+                        </span>
+                    {% endif %}
+                </small><br>
+            {% endif %}
+
+            {% if article.journalist %}
+                <small>
+                    By: {{ article.journalist.username }}
+
+                    {# Highlight subscribed journalist #}
+                    {% if user.role == 'reader' and article.journalist in user.subscribed_journalists.all %}
+                        <span class="badge" style="background:#d4edda; padding:2px 6px;">
+                            Subscribed Journalist
+                        </span>
+                    {% endif %}
+                </small>
+            {% endif %}
+
+            <!-- Article preview -->
+            <p>{{ article.content|truncatewords:30 }}</p>
+<!-- Reader subscribe actions -->
+{% if user.role == 'reader' %}
+    <div style="margin-top:5px;">
+
+        {% if article.journalist and article.journalist not in user.subscribed_journalists.all %}
+            <a href="{% url 'subscribe_journalist' article.journalist.id %}">
+                Subscribe to Journalist
+            </a>
+        {% endif %}
+
+        {% if article.publisher and article.publisher not in user.subscribed_publishers.all %}
+            {% if article.journalist and article.journalist not in user.subscribed_journalists.all %}
+                |
+            {% endif %}
+            <a href="{% url 'subscribe_publisher' article.publisher.id %}">
+                Subscribe to Publisher
+            </a>
+        {% endif %}
+
+    </div>
+{% endif %}
+
+
+            <!-- Role-based actions -->
+            {% if user.role == 'journalist' %}
+                    <a href="{% url 'update_article' article.id %}">Edit</a> |
+                    <a href="{% url 'delete_article' article.id %}">Delete</a>
+
+            {% elif user.role == 'editor' %}
+                <a href="{% url 'update_article' article.id %}">Edit</a> |
+                <a href="{% url 'delete_article' article.id %}">Delete</a>
+                {% if not article.approved %}
+                    | <a href="{% url 'approve_article' article.id %}">Approve</a>
+                {% endif %}
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No articles available.</li>
+    {% endfor %}
+    <p><a href="{% url 'home' %}">Go back home</a></p>
+</ul>
+
+<!-- Journalists can create new articles -->
+{% if user.role == 'journalist' %}
+    <p><a href="{% url 'create_article' %}">Create Article</a></p>
+{% endif %}
+
+{% endblock %}

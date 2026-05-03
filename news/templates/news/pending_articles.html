@@ -1,0 +1,15 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<h2>Pending Articles</h2>
+<ul>
+    {% for article in articles %}
+        <li>
+            <strong>{{ article.title }}</strong> by {{ article.journalist.username }}
+            <a href="{% url 'approve_article' article.id %}">Approve</a>
+        </li>
+    {% empty %}
+        <li>No pending articles.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

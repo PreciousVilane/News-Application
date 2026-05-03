@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Application</title>
+    <style>
+        /* Make body full height and use flex to push footer down */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+        nav a:hover {
+            color: #39c911;      /* text changes to a brighter green */
+            background: rgba(255, 255, 255, 0.2); /* subtle background highlight */
+            padding: 5px 10px;
+            border-radius: 5px;  /* rounded edges for hover */
+}
+        header {
+            background: #c95e11c5;
+            color: white;
+            padding: 1em;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        main {
+            flex: 1; /* Take remaining space */
+            padding: 20px;
+        }
+
+        /* New green banner before footer */
+        .bottom-banner {
+            background: rgba(145, 86, 52, 0.3); /* darker green */
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        footer {
+            background:  #c95e11c5;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>News Application</h1>
+        {% if user.is_authenticated %}
+            <p>Welcome, {{ user.username }} ({{ user.role|title }})</p>
+            <nav>
+                <a href="{% url 'home' %}">Home</a>
+                {% if user.role == 'journalist' %}
+                    <a href="{% url 'article_list' %}">My Articles</a>
+                    <a href="{% url 'newsletter_list' %}">My Newsletters</a>
+                    <a href="{% url 'create_article' %}">Create Article</a>
+                    <a href="{% url 'create_newsletter' %}">Create Newsletter</a>
+                {% endif %}
+                {% if user.role == 'editor' %}
+                    <a href="{% url 'article_list' %}">All Articles</a>
+                    <a href="{% url 'newsletter_list' %}">All Newsletters</a>
+                {% endif %}
+                <a href="{% url 'logout' %}">Logout</a>
+            </nav>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        <hr>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Green banner above footer -->
+    <div class="bottom-banner">
+        <p>Subscribe to our newsletter for latest updates!</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 News Application</p>
+    </footer>
+
+</body>
+</html>

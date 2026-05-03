@@ -1,0 +1,30 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<article>
+    <h2>{{ article.title }}</h2>
+
+    {% if article.publisher %}
+        <p><strong>Publisher:</strong> {{ article.publisher.name }}</p>
+    {% endif %}
+
+    {% if article.journalist %}
+        <p><strong>By:</strong> {{ article.journalist.username }}</p>
+    {% endif %}
+
+    <p><strong>Status:</strong>
+        {% if article.approved %}Approved{% else %}Pending{% endif %}
+    </p>
+
+    <hr>
+
+    <div style="white-space: pre-line;">
+        {{ article.content }}
+    </div>
+
+    <br>
+
+    <a href="{% url 'article_list' %}">← Back to articles</a>
+</article>
+{% endblock %}
+
